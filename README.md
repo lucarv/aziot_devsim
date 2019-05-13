@@ -2,7 +2,7 @@
 
 How to run this sample:
 
-1. git clone
+1. git clone git://github.com/lucarv/aziot_devsim.git
 2. install dependencies
 ```
 > npm install
