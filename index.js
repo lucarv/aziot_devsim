@@ -38,7 +38,7 @@ const telemetry = () => {
   let message = new Message(JSON.stringify(payload));
 
 // A message can have custom properties that are also encoded and can be used for routing
-message.properties.add('propertyName', 'propertyValue');
+message.properties.add('deviceType', 'sensor');
 
 // A unique identifier can be set to easily track the message in your application
 message.messageId = uuid.v4();
