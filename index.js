@@ -17,7 +17,7 @@ var Message = require('azure-iot-device').Message;
 
 // String containing Hostname, Device Id & Device Key in the following formats:
 //  "HostName=<iothub_host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"
-var connectionString = 'YOUR DEVICE CONNECTIO STRING';
+var connectionString = 'HostName=elux-connfac-iothub.azure-devices.net;DeviceId=simulated;SharedAccessKey=Fo4s7L19C8/F9z0ZcK9AC2VuAZLCkrAzeBd9XsBQLYo='
 
 // fromConnectionString must specify a transport constructor, coming from any transport package.
 var client = Client.fromConnectionString(connectionString, Protocol);
@@ -38,11 +38,11 @@ const telemetry = () => {
   let message = new Message(JSON.stringify(payload));
 
 // A message can have custom properties that are also encoded and can be used for routing
-message.properties.add('deviceType', 'sensor');
+message.properties.add('deviceType', 'test');
 
 // A unique identifier can be set to easily track the message in your application
 message.messageId = uuid.v4();
-
+console.log(message)
   client.sendEvent(message, function (err) {
     if (err) {
       console.error('Could not send: ' + err.toString());
@@ -86,5 +86,23 @@ client.open(function (err) {
       console.error(err.message);
       process.exit(-1);
     });
+
+        // register handler for 'reset'
+        client.onDeviceMethod('reset', function (request, response) {
+          console.log('received a request for reset');
+          temperature = 25
+          var responsePayload = {
+            result: 'sensor reset'
+          };
+    
+          response.send(200, responsePayload, function (err) {
+            if (err) {
+              console.error('Unable to send method response: ' + err.toString());
+              process.exit(-1);
+            } else {
+              console.log('response to reset sent.');
+            }
+          });
+        });
   }
 });
