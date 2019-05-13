@@ -18,7 +18,6 @@ var Message = require('azure-iot-device').Message;
 // String containing Hostname, Device Id & Device Key in the following formats:
 //  "HostName=<iothub_host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"
 var connectionString = '<YOUR CONNECTION STRING>'
-HostName=elux-connfac-iothub.azure-devices.net;DeviceId=simulated;SharedAccessKey=Fo4s7L19C8/F9z0ZcK9AC2VuAZLCkrAzeBd9XsBQLYo='
 
 // fromConnectionString must specify a transport constructor, coming from any transport package.
 var client = Client.fromConnectionString(connectionString, Protocol);
@@ -43,7 +42,6 @@ message.properties.add('deviceType', 'test');
 
 // A unique identifier can be set to easily track the message in your application
 message.messageId = uuid.v4();
-console.log(message)
   client.sendEvent(message, function (err) {
     if (err) {
       console.error('Could not send: ' + err.toString());
