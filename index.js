@@ -34,6 +34,7 @@ const telemetry = () => {
     "timestamp": Date.now()
   }
 
+  console.log('Current Sensor Temperature is: ' + payload.temperature)
   /**/
   let message = new Message(JSON.stringify(payload));
 
@@ -47,7 +48,7 @@ message.messageId = uuid.v4();
       console.error('Could not send: ' + err.toString());
       process.exit(-1);
     } else {
-      console.log('Message sent');
+      console.log('Message sent\n '+ 'Current Sensor Temperature is: ' + temperature);
       temperature += 0.2
     }
   });
