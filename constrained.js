@@ -57,5 +57,4 @@ const run = () => {
   });
 };
 
-console.log(process.env.FREQ)
-setInterval(run, 2000);
+setInterval(run, process.env.FREQ);
