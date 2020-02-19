@@ -10,9 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "azure-iot-device": "^1.9.2",
-    "azure-iot-device-amqp": "^1.11.0",
     "azure-iot-device-mqtt": "^1.9.2",
-    "dotenv": "^8.0.0",
-    "uuid": "^3.3.2"
+    "fs": "0.0.1-security"
   }
 }
