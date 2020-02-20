@@ -14,16 +14,16 @@ let defaults = payloads[type];
 var connectionString = process.argv[3];
 var startMarker = connectionString.indexOf(';DeviceId');
 var endMarker = connectionString.indexOf(';x509')
-
 var deviceId, certFile, keyFile;
+var currentPath = process.cwd();
 var x509 = false;
 
-if ( startMarker > -1 ){
+if ( endMarker > -1 ){
   x509 = true;
   deviceId = connectionString.substring(startMarker + 10, endMarker);
   console.log('X509: ' + deviceId);
-  certFile = './cert/' + deviceId +'_cert.pem';
-  keyFile = './cert/' + deviceId +'_key.pem';
+  certFile = currentPath + '/cert/' + deviceId +'_cert.pem';
+  keyFile = currentPath + '/cert/' + deviceId +'_key.pem';
   if (!connectionString || !certFile || !keyFile) {
     console.log('Invalid or Missing X.509 files');
     process.exit(-1);
@@ -33,6 +33,7 @@ if ( startMarker > -1 ){
   deviceId = connectionString.substring((connectionString.indexOf(';DeviceId') + 10), connectionString.indexOf(';SharedAccess'))
 
 }
+
 var client = Client.fromConnectionString(connectionString, Protocol);
 if (x509) {
   var options = {
