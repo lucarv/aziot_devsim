@@ -60,7 +60,7 @@ const telemetry = () => {
       for(var key in defaults){
         if (typeof defaults[key] == 'number')
           defaults[key] = defaults[key] + Math.random()
-          payload[key] =   defaults[key]     
+          payload[key] =   defaults[key]    
       }
       payload.posix_time = Date.now();
       break;
@@ -213,7 +213,7 @@ client.onDeviceMethod('stop', function (request, response) {
 // register handler for 'reset'
 client.onDeviceMethod('reset', function (request, response) {
   console.log('received a request for reset');
-  temperature = 25
+  defaults.temperature = 20
   var responsePayload = {
     result: 'sensor reset'
   };
