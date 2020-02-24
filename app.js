@@ -7,7 +7,7 @@ var Protocol = require('azure-iot-device-mqtt').Mqtt;
 var Client = require('azure-iot-device').Client;
 var Message = require('azure-iot-device').Message;
 var payloads = require('./payloads.json');
-let defaults = payloads[0]
+var defaults = payloads[0];
 
 /*
 new stuff for later 
@@ -16,6 +16,10 @@ var type = process.argv[2]
 let defaults = payloads[type];
 
 var connectionString = process.argv[3];
+*/
+
+var connectionString = "HostName=devhub-luca.azure-devices.net;DeviceId=blender001;SharedAccessKey=Bt0gTubze5gfS6IyeiRbNrpTRVk+oyXeLD4P7OMVGcQ=";
+var type = '0';
 var deviceIdMarker = connectionString.indexOf(';DeviceId');
 var x509Marker = connectionString.indexOf(';x509')
 var edgeMarker = connectionString.indexOf(';GatewayHostName')
@@ -38,10 +42,6 @@ if ( x509Marker > -1 ){
   deviceId = connectionString.substring((connectionString.indexOf(';DeviceId') + 10), connectionString.indexOf(';SharedAccess'))
 
 }
-*/
-
-var connectionString = <your cs here></your>;
-var deviceId = <your device id here></your>;
 
 var client = Client.fromConnectionString(connectionString, Protocol);
 if (x509) {
@@ -59,7 +59,8 @@ const telemetry = () => {
     case '0':
       for(var key in defaults){
         if (typeof defaults[key] == 'number')
-          payload[key] = defaults[key] + Math.random()      
+          defaults[key] = defaults[key] + Math.random()
+          payload[key] =   defaults[key]     
       }
       payload.posix_time = Date.now();
       break;
