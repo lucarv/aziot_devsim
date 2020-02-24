@@ -1,5 +1,9 @@
 [
     {
+        "temperature": 20,
+        "humidity": 67
+    },
+    {
         "RAN_F6_EL3_HydFor": 124,
         "RAN_F6_EL3_HydEtter": 124,
         "RAN_F6_EL3_HP": 1,

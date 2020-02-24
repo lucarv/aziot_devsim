@@ -6,21 +6,26 @@ var fs = require('fs');
 var Protocol = require('azure-iot-device-mqtt').Mqtt;
 var Client = require('azure-iot-device').Client;
 var Message = require('azure-iot-device').Message;
-
 var payloads = require('./payloads.json');
+let defaults = payloads[0]
+
+/*
+new stuff for later 
+
 var type = process.argv[2]
 let defaults = payloads[type];
 
 var connectionString = process.argv[3];
-var startMarker = connectionString.indexOf(';DeviceId');
-var endMarker = connectionString.indexOf(';x509')
+var deviceIdMarker = connectionString.indexOf(';DeviceId');
+var x509Marker = connectionString.indexOf(';x509')
+var edgeMarker = connectionString.indexOf(';GatewayHostName')
 var deviceId, certFile, keyFile;
 var currentPath = process.cwd();
 var x509 = false;
 
-if ( endMarker > -1 ){
+if ( x509Marker > -1 ){
   x509 = true;
-  deviceId = connectionString.substring(startMarker + 10, endMarker);
+  deviceId = connectionString.substring(deviceIdMarker + 10, endMarker);
   console.log('X509: ' + deviceId);
   certFile = currentPath + '/cert/' + deviceId +'_cert.pem';
   keyFile = currentPath + '/cert/' + deviceId +'_key.pem';
@@ -33,6 +38,10 @@ if ( endMarker > -1 ){
   deviceId = connectionString.substring((connectionString.indexOf(';DeviceId') + 10), connectionString.indexOf(';SharedAccess'))
 
 }
+*/
+
+var connectionString = <your cs here></your>;
+var deviceId = <your device id here></your>;
 
 var client = Client.fromConnectionString(connectionString, Protocol);
 if (x509) {
