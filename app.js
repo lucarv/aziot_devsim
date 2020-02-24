@@ -18,7 +18,8 @@ let defaults = payloads[type];
 var connectionString = process.argv[3];
 */
 
-var connectionString = "HostName=devhub-luca.azure-devices.net;DeviceId=blender001;SharedAccessKey=Bt0gTubze5gfS6IyeiRbNrpTRVk+oyXeLD4P7OMVGcQ=";
+var connectionString = { ENTER YOUR CONNECTION STRING HERE }
+//"HostName=XXXXX.azure-devices.net;DeviceId=XXXXX;SharedAccessKey=XXXXX"
 var type = '0';
 var deviceIdMarker = connectionString.indexOf(';DeviceId');
 var x509Marker = connectionString.indexOf(';x509')
