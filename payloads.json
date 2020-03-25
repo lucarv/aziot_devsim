@@ -1,28 +1,3 @@
-[
-    {
-        "temperature": 20,
-        "humidity": 67
-    },
-    {
-        "RAN_F6_EL3_HydFor": 124,
-        "RAN_F6_EL3_HydEtter": 124,
-        "RAN_F6_EL3_HP": 1,
-        "RAN_F6_EL3_Frib": 0,
-        "RAN_F6_EL3_MaxHydLoft": 133,
-        "RAN_F6_EL3_TidBev": 1,
-        "RAN_F6_EL3_Kat": 1
-    },
-    {
-        "furnace": 6,
-        "electrode": 1,
-        "weight": 73.7351526508,
-        "points": 18
-    },
-    {
-        "device": "OpenWeatherInterface",
-        "plant": "BJO",
-        "temp": 1,
-        "pressure": 1000,
-        "humidity": 100
-    }
-]
+{
+    "eap": "ad5250314f563104020670"
+}

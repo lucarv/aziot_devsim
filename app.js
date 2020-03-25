@@ -2,107 +2,44 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 'use strict';
-var fs = require('fs');
-var Protocol = require('azure-iot-device-mqtt').Mqtt;
-var Client = require('azure-iot-device').Client;
-var Message = require('azure-iot-device').Message;
-var payloads = require('./payloads.json');
-var defaults = payloads[0];
+require('dotenv').config()
+const fs = require('fs');
+const Protocol = require('azure-iot-device-mqtt').Mqtt;
+const Client = require('azure-iot-device').Client;
+const Message = require('azure-iot-device').Message;
+const defaults = require('./payloads.json');
+var lastSentValues = Object.assign({}, defaults);
+const connectionString = process.env.CONNECTION_STRING,
+  deviceId = process.env.DEVICE_ID,
+  authType = process.env.AUTH_TYPE
+var tele,
+  interval = 5000;
+var certFile, keyFile;
+const currentPath = process.cwd();
 
 /*
-new stuff for later 
-
-var type = process.argv[2]
-let defaults = payloads[type];
-
-var connectionString = process.argv[3];
+const parseConnectionString = () => {
+  let didStart = connectionString.substring(connectionString.indexOf('DeviceId') + 9);
+  let didEnd = didStart.indexOf(';')
+  deviceId = didStart.substring(0, didEnd)
+  if (connectionString.includes('GatewayHostName')) {
+    authType = 'leaf';
+    x509 = true;
+  } else if (connectionString.includes('x509')) {
+    authType = 'x509';
+    x509 = true;
+  } else authType = 'psk';
+}
 */
-
-var connectionString = { ENTER YOUR CONNECTION STRING HERE }
-//"HostName=XXXXX.azure-devices.net;DeviceId=XXXXX;SharedAccessKey=XXXXX"
-var type = '0';
-var deviceIdMarker = connectionString.indexOf(';DeviceId');
-var x509Marker = connectionString.indexOf(';x509')
-var edgeMarker = connectionString.indexOf(';GatewayHostName')
-var deviceId, certFile, keyFile;
-var currentPath = process.cwd();
-var x509 = false;
-
-if ( x509Marker > -1 ){
-  x509 = true;
-  deviceId = connectionString.substring(deviceIdMarker + 10, endMarker);
-  console.log('X509: ' + deviceId);
-  certFile = currentPath + '/cert/' + deviceId +'_cert.pem';
-  keyFile = currentPath + '/cert/' + deviceId +'_key.pem';
-  if (!connectionString || !certFile || !keyFile) {
-    console.log('Invalid or Missing X.509 files');
-    process.exit(-1);
-  }
-} else {
-  console.log('PSK: ' + deviceId);
-  deviceId = connectionString.substring((connectionString.indexOf(';DeviceId') + 10), connectionString.indexOf(';SharedAccess'))
-
-}
-
-var client = Client.fromConnectionString(connectionString, Protocol);
-if (x509) {
-  var options = {
-    cert : fs.readFileSync(certFile, 'utf-8').toString(),
-    key : fs.readFileSync(keyFile, 'utf-8').toString()
-  };
- client.setOptions(options);
-}
-var tele;
-
 const telemetry = () => {
-  var payload = {}
-  switch (type) {
-    case '0':
-      for(var key in defaults){
-        if (typeof defaults[key] == 'number')
-          defaults[key] = defaults[key] + Math.random()
-          payload[key] =   defaults[key]    
-      }
-      payload.posix_time = Date.now();
-      break;
-    case '1':
-      for(var key in defaults){
-        if (typeof defaults[key] == 'number')
-          payload[key] = defaults[key] + Math.random() ;
-          else  
-          payload[key] = defaults[key]   
-      }
-      payload.posix_time = Date.now();
-      break;
-    case '2':
-      for(var key in defaults){
-        if (typeof defaults[key] == 'number')
-          payload[key] = defaults[key] + Math.random() ;
-          else  
-          payload[key] = defaults[key]   
-      }
-      payload.time = new Date();
-      break;
-    case '3': {
-      payload["messageVersion"] = 1;
-      payload["timestamp"] = new Date();
-      payload["resourceID"] = "Machine01";
-      payload["eventType"] = 0;
-      payload["data"] = {
-        "productionOrderNumber": 123456788,
-        "materialNumber": 987654321,
-        "amount": Math.round(Math.random() * (20 - 1) + 1),
-        "productStatus": Math.round(Math.random() * (3 - 1) + 1)
-      }
-      break;
-    }
-    default: {
-      process.exit(0);
-      break;
-    }
+  for (var key in lastSentValues) {
+    if (typeof lastSentValues[key] == 'number')
+      lastSentValues[key] += Math.random()
   }
-  // Encode message body using UTF-8  
-  let messageBody = JSON.stringify(Object.assign({}, payload));
+
+  lastSentValues['timeStamp'] = new Date();
+
+  let messageBody = JSON.stringify(lastSentValues);
   let messageBytes = Buffer.from(messageBody, "utf8");
   let message = new Message(messageBytes);
 
@@ -113,10 +50,27 @@ const telemetry = () => {
     if (err) {
       console.error('Could not send: ' + err.toString());
     } else {
-      console.error('Event sent to hub: ' + JSON.stringify(payload));
+      console.error('Event sent to hub: ' + JSON.stringify(lastSentValues));
     }
   });
-};
+}
+
+var client = Client.fromConnectionString(connectionString, Protocol);
+if (authType == 'x509') {
+  certFile = currentPath + '/cert/' + deviceId + '_cert.pem';
+  keyFile = currentPath + '/cert/' + deviceId + '_key.pem';
+  if (!certFile || !keyFile) {
+    console.log('Invalid or Missing X.509 files');
+    process.exit(-1);
+  } else {
+    var options = {
+      cert: fs.readFileSync(certFile, 'utf-8').toString(),
+      key: fs.readFileSync(keyFile, 'utf-8').toString()
+    };
+    client.setOptions(options);
+  }
+}
+
 
 console.log('......will try to connect....');
 
@@ -173,16 +127,15 @@ client.on('message', function (msg) {
 
 // register handler for 'start'
 client.onDeviceMethod('start', function (request, response) {
-  var interval = 5000;
-  console.log('received a request to start telemetry');
   var responsePayload = {
     result: 'started'
   };
   if (request.payload !== null) {
-    if (request.payload.interval !== 'null') {
+    if (request.payload.hasOwnProperty('interval')) {
       interval = request.payload.interval;
     }
   }
+  console.log('received a request to start telemetry at interval: ' + interval);
 
   tele = setInterval(telemetry, interval);
   var responsePayload = {
@@ -214,7 +167,8 @@ client.onDeviceMethod('stop', function (request, response) {
 // register handler for 'reset'
 client.onDeviceMethod('reset', function (request, response) {
   console.log('received a request for reset');
-  defaults.temperature = 20
+  lastSentValues = Object.assign({}, defaults);
+
   var responsePayload = {
     result: 'sensor reset'
   };
