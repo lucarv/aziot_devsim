@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "/Users/lucarv/Library/Arduino15/packages/AZ3166/tools/**",
+                "/Users/lucarv/Library/Arduino15/packages/AZ3166/hardware/stm32f4/1.6.5/**"
+            ],
+            "forcedInclude": [
+                "/Users/lucarv/Library/Arduino15/packages/AZ3166/hardware/stm32f4/1.6.5/cores/arduino/Arduino.h"
+            ]
+        }
+    ]
+}

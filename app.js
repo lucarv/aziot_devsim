@@ -8,6 +8,7 @@ const Protocol = require('azure-iot-device-mqtt').Mqtt;
 const Client = require('azure-iot-device').Client;
 const Message = require('azure-iot-device').Message;
 const defaults = require('./payloads.json');
+var msgidx = 0;
 var lastSentValues = Object.assign({}, defaults);
 const connectionString = process.env.CONNECTION_STRING,
   deviceId = process.env.DEVICE_ID,
@@ -32,15 +33,22 @@ const parseConnectionString = () => {
 }
 */
 const telemetry = () => {
-  for (var key in lastSentValues) {
-    if (typeof lastSentValues[key] == 'number')
-      lastSentValues[key] += Math.random()
+  var payload = '';
+  if (defaults.array) {
+    payload = defaults.messages[msgidx];
+    msgidx++;
+    if (msgidx > defaults.messages.length)
+      msgidx = 0;
+  } else {
+    for (var key in lastSentValues) {
+      if (typeof lastSentValues[key] == 'number')
+        lastSentValues[key] += Math.random()
+    }
+    lastSentValues['timeStamp'] = new Date();
+    payload = JSON.stringify(lastSentValues);
   }
 
-  lastSentValues['timeStamp'] = new Date();
-
-  let messageBody = JSON.stringify(lastSentValues);
-  let messageBytes = Buffer.from(messageBody, "utf8");
+    let messageBytes = Buffer.from(payload, "utf8");
   let message = new Message(messageBytes);
 
   message.contentEncoding = "utf-8";
@@ -50,7 +58,7 @@ const telemetry = () => {
     if (err) {
       console.error('Could not send: ' + err.toString());
     } else {
-      console.error('Event sent to hub: ' + JSON.stringify(lastSentValues));
+      console.error('Event sent to hub: ' + JSON.stringify(payload));
     }
   });
 }
