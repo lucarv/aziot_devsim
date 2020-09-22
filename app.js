@@ -49,7 +49,7 @@ const telemetry = () => {
     payload = JSON.stringify(lastSentValues);
   }
   */
-  let payload = {"something_random": MATH.random()}
+  let payload = {"something_random": Math.random(), "timestamp":Date.now()}
   //let messageBytes = Buffer.from(payload, "utf8");
   let messageBytes = Buffer.from(JSON.stringify(payload))
   let message = new Message(messageBytes);
