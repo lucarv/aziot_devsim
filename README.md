@@ -14,12 +14,15 @@ Note: if you are running this on a raspberry pi, nake sure you have node.js v10 
 ```
 > npm install
 ```
-3. edit the payloads.josn file with templates for your telemetry payload. It should be an array, and when you start the script, you pass the array index as the first command line argument  
+3. set env properties for CONNECTION_STRING, DEVICE_ID and AUTH_TYPE (set this tp PSK)
+```
+CONNECTION_STRING=HostName=xxx.azure-devices.net;DeviceId=mydevice;SharedAccessKey=zzzzzzzzzccxcedvdvfebtrwbfdbvad=
+DEVICE_ID=mydevice
+AUTH_TYPE=PSK
+```
 4. run the sample for a normal device from the command line  
 ```
-> node app [INDEX] "HostName=[HUBNAME].azure-devices.net;DeviceId=[DEVICEID];x509=true"   
-or
-> node app [INDEX] "HostName=[HUBNAME].azure-devices.net;DeviceId=[DEVICEID];SharedAccessKey=[PSK]"
+> node app 
 ```
 5. run the sample for a constrained device from the command line (better instructions soon)  
 ```

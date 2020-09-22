@@ -33,6 +33,7 @@ const parseConnectionString = () => {
 }
 */
 const telemetry = () => {
+  /*
   var payload = '';
   if (defaults.array) {
     payload = defaults.messages[msgidx];
@@ -47,13 +48,15 @@ const telemetry = () => {
     lastSentValues['timeStamp'] = new Date();
     payload = JSON.stringify(lastSentValues);
   }
-
-    let messageBytes = Buffer.from(payload, "utf8");
+  */
+  let payload = {"something_random": MATH.random()}
+  let messageBytes = Buffer.from(payload, "utf8");
+  let messageBytes = Buffer.from(JSON.stringify(payload))
   let message = new Message(messageBytes);
-
+/*
   message.contentEncoding = "utf-8";
   message.contentType = "application/json";
-
+*/
   client.sendEvent(message, function (err) {
     if (err) {
       console.error('Could not send: ' + err.toString());
@@ -128,7 +131,7 @@ client.on('message', function (msg) {
       client.error('could not settle message: ' + err.toString());
       process.exit(-1);
     } else {
-      console.log('message successfully accepted');
+      console.log(`message received`);
     }
   });
 });
