@@ -53,10 +53,11 @@ const telemetry = () => {
   //let messageBytes = Buffer.from(payload, "utf8");
   let messageBytes = Buffer.from(JSON.stringify(payload))
   let message = new Message(messageBytes);
-/*
+  message.properties.add('deviceType', 'simulated');
+
   message.contentEncoding = "utf-8";
   message.contentType = "application/json";
-*/
+
   client.sendEvent(message, function (err) {
     if (err) {
       console.error('Could not send: ' + err.toString());
