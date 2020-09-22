@@ -50,7 +50,7 @@ const telemetry = () => {
   }
   */
   let payload = {"something_random": MATH.random()}
-  let messageBytes = Buffer.from(payload, "utf8");
+  //let messageBytes = Buffer.from(payload, "utf8");
   let messageBytes = Buffer.from(JSON.stringify(payload))
   let message = new Message(messageBytes);
 /*
